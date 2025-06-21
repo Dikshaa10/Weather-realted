@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unique Weather Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --day-bg: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+      --night-bg: linear-gradient(120deg, #232526 0%, #414345 100%);
+      --card-bg: rgba(255,255,255,0.25);
+      --card-bg-night: rgba(30,34,90,0.35);
+      --glass-blur: blur(10px);
+      --border-day: linear-gradient(120deg, #f6d365, #fda085);
+      --border-night: linear-gradient(120deg, #232526, #414345);
+      --text-day: #232526;
+      --text-night: #f5f6fa;
+      --accent: #ffb347;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Quicksand', Arial, sans-serif;
+      transition: background 0.5s, color 0.5s;
+    }
+    .dashboard {
+      max-width: 420px;
+      margin: 60px auto;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      position: relative;
+      transition: background 0.5s;
+      border: 4px solid transparent;
+      background-clip: padding-box;
+    }
+    .day {
+      background: var(--day-bg);
+      color: var(--text-day);
+      border-image: var(--border-day) 1;
+    }
+    .night {
+      background: var(--night-bg);
+      color: var(--text-night);
+      border-image: var(--border-night) 1;
+    }
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: var(--glass-blur);
+      margin: 36px 24px 24px 24px;
+      padding: 32px 24px;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      transition: background 0.5s, color 0.5s;
+      position: relative;
+    }
+    .night .card {
+      background: var(--card-bg-night);
+      color: var(--text-night);
+    }
+    .weather-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 18px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: float 2s infinite ease-in-out;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0);}
+      50% { transform: translateY(-10px);}
+    }
+    .weather-icon span {
+      font-size: 60px;
+      filter: drop-shadow(0 2px 8px #fda08580);
+    }
+    .temperature {
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+    .condition {
+      margin-top: 6px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .details {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-around;
+      font-size: 1rem;
+      opacity: 0.85;
+    }
+    .date-time {
+      margin-top: 12px;
+      font-size: 0.98rem;
+      opacity: 0.7;
+      letter-spacing: 0.5px;
+    }
+    .toggle-btn {
+      margin: 20px auto 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 22px;
+      background: var(--accent);
+      color: #232526;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #fda08580;
+      transition: background 0.5s, color 0.5s, box-shadow 0.3s;
+    }
+    .toggle-btn:hover {
+      background: #ffcb74;
+      box-shadow: 0 4px 16px #fda08560;
+    }
+    .night .toggle-btn {
+      background: #414345;
+      color: #f5f6fa;
+      box-shadow: 0 2px 8px #23252660;
+    }
+    .night .toggle-btn:hover {
+      background: #232526;
+    }
+  </style>
+</head>
+<body class="day" id="mainBody">
+  <div class="dashboard day" id="dashboard">
+    <button class="toggle-btn" onclick="toggleMode()">
+      <span id="toggleIcon">🌙</span> Switch Day/Night
+    </button>
+    <div class="card">
+      <div class="weather-icon"><span id="weatherEmoji">☀️</span></div>
+      <div class="temperature" id="temp">28°C</div>
+      <div class="condition" id="cond">Sunny</div>
+      <div class="details">
+        <div>Humidity: <span id="hum">45%</span></div>
+        <div>Wind: <span id="wind">10 km/h</span></div>
+      </div>
+      <div class="date-time" id="dateTime"></div>
+    </div>
+  </div>
+  <script>
+    // Update date and time
+    function updateDateTime() {
+      const now = new Date();
+      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' };
+      document.getElementById('dateTime').textContent = now.toLocaleDateString('en-US', options);
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+
+    // Toggle day/night mode with icon and emoji change
+    function toggleMode() {
+      const body = document.getElementById('mainBody');
+      const dashboard = document.getElementById('dashboard');
+      const toggleIcon = document.getElementById('toggleIcon');
+      const weatherEmoji = document.getElementById('weatherEmoji');
+      const cond = document.getElementById('cond');
+      const temp = document.getElementById('temp');
+      if(body.classList.contains('day')) {
+        body.classList.remove('day');
+        dashboard.classList.remove('day');
+        body.classList.add('night');
+        dashboard.classList.add('night');
+        toggleIcon.textContent = '☀️';
+        weatherEmoji.textContent = '🌙';
+        cond.textContent = 'Clear Night';
+        temp.textContent = '20°C';
+      } else {
+        body.classList.remove('night');
+        dashboard.classList.remove('night');
+        body.classList.add('day');
+        dashboard.classList.add('day');
+        toggleIcon.textContent = '🌙';
+        weatherEmoji.textContent = '☀️';
+        cond.textContent = 'Sunny';
+        temp.textContent = '28°C';
+      }
+    }
+  </script>
+</body>
+</html>
